@@ -1,8 +1,14 @@
-package com.tedmo.statemachine;
+package com.tedmo.statemachine.test;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.tedmo.statemachine.Action;
+import com.tedmo.statemachine.Event;
+import com.tedmo.statemachine.StateContext;
+import com.tedmo.statemachine.StateMachineCtx;
+import com.tedmo.statemachine.Transition;
 
 public class StateModelFactory {
 	

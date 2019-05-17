@@ -1,4 +1,4 @@
-package com.tedmo.statemachine;
+package com.tedmo.statemachine.test;
 
 public enum StateId {
 	INIT,
