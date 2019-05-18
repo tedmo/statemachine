@@ -1,5 +1,9 @@
 package com.tedmo.statemachine.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +17,8 @@ import com.tedmo.statemachine.Condition;
 import com.tedmo.statemachine.StateContext;
 import com.tedmo.statemachine.StateMachineCtx;
 import com.tedmo.statemachine.Transition;
+
+import lombok.AllArgsConstructor;
 
 public class SingleTransitionTest {
 	
@@ -30,29 +36,41 @@ public class SingleTransitionTest {
 	private Action<StateId, TestEvent> onExitTestEvent;
 	
 	@Mock
-	Condition condition;
+	private Condition condition;
+	
+	private TestEvent event;
 	
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		
-		onTestEvent = buildCreateEventAction(ON_EVENT);
-		onEnterTestEvent = buildCreateEventAction(ON_ENTER);
-		onExitTestEvent = buildCreateEventAction(ON_EXIT);
+		event = new TestEvent("test event message");
+		
+		onTestEvent = spy(new TestAction(ON_EVENT));
+		onEnterTestEvent = spy(new TestAction(ON_ENTER));
+		onExitTestEvent = spy(new TestAction(ON_EXIT));
 		
 		stateMachineCtx = buildStateMachine();
+		
 	}
 	
-	private Action<StateId, TestEvent> buildCreateEventAction(String actionType) {
-		return (ctx, event) -> 
+	@AllArgsConstructor
+	private static class TestAction implements Action<StateId, TestEvent> {
+		
+		private String actionType;
+
+		@Override
+		public void doAction(StateMachineCtx<StateId> ctx, TestEvent event) {
 			System.out.println(buildActionMessage(
 					actionType,
 					String.valueOf(ctx.getCurrentState().getId()),
-					event.getCreateMessage()));
-	}
-	
-	private String buildActionMessage(String actionType, String state, String message) {
-		return String.format("%s %s: %s", actionType, state, message);
+					event.getMessage()));
+		}
+		
+		private String buildActionMessage(String actionType, String state, String message) {
+			return String.format("%s %s: %s", actionType, state, message);
+		}
+		
 	}
 	
 	private StateMachineCtx<StateId> buildStateMachine() {
@@ -83,8 +101,14 @@ public class SingleTransitionTest {
 	@Test
 	public void test() {
 		
-		TestEvent event = new TestEvent("create event message");
 		stateMachineCtx.sendEvent(event);
+		StateContext<StateId> currentState = stateMachineCtx.getCurrentState();
+		assertThat(currentState).isNotNull();
+		assertThat(currentState.getId()).isEqualTo(StateId.SUSPENDED);
+		
+		verify(onTestEvent).doAction(stateMachineCtx, event);
+		verify(onEnterTestEvent).doAction(stateMachineCtx, event);
+		verify(onExitTestEvent).doAction(stateMachineCtx, event);
 	}
 	
 }

@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TestEvent {
 	
-	private String createMessage;
+	private String message;
 	
 }
