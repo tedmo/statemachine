@@ -68,11 +68,11 @@ public class SingleTransitionTest {
 
 		@Override
 		public void doAction(StateMachineCtx<TestStateId, TestAppCtx> ctx, TestEvent event) {
-			ctx.getAppCtx().logAction(ctx.getCurrentState().getId(), event, actionType);
+			ctx.getAppCtx().logAction(ctx.getCurrentState(), event, actionType);
 			
 			System.out.println(buildActionMessage(
 					actionType,
-					String.valueOf(ctx.getCurrentState().getId()),
+					String.valueOf(ctx.getCurrentState()),
 					event.getMessage()));
 		}
 		
@@ -112,9 +112,7 @@ public class SingleTransitionTest {
 	public void test() {
 		stateMachineCtx.sendEvent(event);
 		
-		State<TestStateId, TestAppCtx> currentState = stateMachineCtx.getCurrentState();
-		assertThat(currentState).isNotNull();
-		assertThat(currentState.getId()).isEqualTo(TestStateId.END_STATE);
+		assertThat(stateMachineCtx.getCurrentState()).isEqualTo(TestStateId.END_STATE);
 		
 		verify(appCtx).logAction(TestStateId.START_STATE, event, ON_EVENT);
 		verify(appCtx).logAction(TestStateId.START_STATE, event, ON_EXIT);

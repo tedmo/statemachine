@@ -26,4 +26,8 @@ public class StateMachineCtx <S, D> {
 		currentState.getOnEnterAction(event).doAction(this, event);
 	}
 	
+	public S getCurrentState() {
+		return currentState.getId();
+	}
+	
 }
