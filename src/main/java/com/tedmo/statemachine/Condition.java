@@ -1,6 +1,6 @@
 package com.tedmo.statemachine;
 
-public interface Condition<S, E extends Enum<E>> {
+public interface Condition {
 
-	public boolean conditionMet(StateMachineCtx<S, E> ctx);
+	public boolean conditionMet(StateMachineCtx<?> ctx);
 }

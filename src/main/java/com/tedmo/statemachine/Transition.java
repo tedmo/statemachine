@@ -1,21 +1,19 @@
 package com.tedmo.statemachine;
 
-public class Transition<S, E extends Enum<E>> {
+import java.util.Optional;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class Transition<S> {
 	
-	S toState;
-	Condition<S, E> condition;
+	private S toState;
+	private Condition condition;
 	
-	public S getToState() {
-		return toState;
-	}
-	public void setToState(S toState) {
-		this.toState = toState;
-	}
-	public Condition<S, E> getCondition() {
-		return condition;
-	}
-	public void setCondition(Condition<S, E> condition) {
-		this.condition = condition;
+	public Optional<Condition> getCondition() {
+		return Optional.ofNullable(condition);
 	}
 	
 }

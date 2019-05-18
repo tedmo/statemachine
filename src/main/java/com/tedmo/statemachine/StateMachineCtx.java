@@ -1,38 +1,32 @@
 package com.tedmo.statemachine;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class StateMachineCtx <S, E extends Enum<E>> {
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class StateMachineCtx <S> {
 	
-	StateContext<S, E> currentState;
-	Map<S, StateContext<S, E>> states;
+	private StateContext<S> currentState;
+	private Map<S, StateContext<S>> states;
 	
-	public void sendEvent(Event<E> event) {
+	public StateMachineCtx() {
+		this.states = new HashMap<>();
+	}
+	
+	public <E> void sendEvent(E event) {
 		currentState.getOnEventAction(event).doAction(this, event);
-		currentState.getTransition(event.getName(), this)
+		currentState.getTransition(event, this)
 			.ifPresent(transition -> doTransition(transition, event));
 	}
 	
-	private void doTransition(Transition<S, E> transition, Event<E> event) {
+	private <E> void doTransition(Transition<S> transition, E event) {
 		currentState.getOnExitAction(event).doAction(this, event);
 		currentState = states.get(transition.getToState());
 		currentState.getOnEnterAction(event).doAction(this, event);
-	}
-
-	public StateContext<S, E> getCurrentStateContext() {
-		return currentState;
-	}
-
-	public void setCurrentStateContext(StateContext<S, E> currentStateContext) {
-		this.currentState = currentStateContext;
-	}
-
-	public Map<S, StateContext<S, E>> getStateContexts() {
-		return states;
-	}
-
-	public void setStateContexts(Map<S, StateContext<S, E>> stateContexts) {
-		this.states = stateContexts;
 	}
 	
 }

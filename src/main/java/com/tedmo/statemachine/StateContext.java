@@ -1,64 +1,70 @@
 package com.tedmo.statemachine;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class StateContext<S, E extends Enum<E>> {
-
-	S id;
-	Map<E, List<Transition<S, E>>> transitions;
-	Map<E, Action<S, E>> onEventActions;
-	Map<E, Action<S, E>> onEnterActions;
-	Map<E, Action<S, E>> onExitActions;
+public class StateContext<S> {
 	
-	public Action<S, E> getOnEventAction(Event<E> event) {
-		return onEventActions.get(event.getName());
-	}
+	private S id;
 	
-	public Action<S, E> getOnExitAction(Event<E> event) {
-		return onExitActions.get(event.getName());
-	}
+	private Map<Class<?>, List<Transition<S>>> transitions = new HashMap<>();
+	private Map<Class<?>, Action<S, ?>> onEventActions = new HashMap<>();
+	private Map<Class<?>, Action<S, ?>> onEnterActions = new HashMap<>();
+	private Map<Class<?>, Action<S, ?>> onExitActions = new HashMap<>();
 	
-	public Action<S, E> getOnEnterAction(Event<E> event) {
-		return onEnterActions.get(event.getName());
-	}
-	
-	public Optional<Transition<S, E>> getTransition(E event, StateMachineCtx<S, E> ctx) {
-		return transitions.get(event).stream()
-				.filter(transition -> transition.getCondition().conditionMet(ctx))
-				.findFirst();
+	public StateContext(S id) {
+		this.id = id;
 	}
 	
 	public S getId() {
 		return id;
 	}
-	public void setId(S id) {
-		this.id = id;
+	
+	public <E> Action<S, E> getOnEventAction(E event) {
+		return getAction(event, onEventActions);
 	}
-	public Map<E, List<Transition<S, E>>> getTransitions() {
-		return transitions;
+	
+	public <E> Action<S, E> getOnExitAction(E event) {
+		return getAction(event, onExitActions);
 	}
-	public void setTransitions(Map<E, List<Transition<S, E>>> transitions) {
-		this.transitions = transitions;
+	
+	public <E> Action<S, E> getOnEnterAction(E event) {
+		return getAction(event, onEnterActions);
 	}
-	public Map<E, Action<S, E>> getOnEventActions() {
-		return onEventActions;
+	
+	public <E> void putOnEventAction(Class<E> eventClass, Action<S, E> action) {
+		onEventActions.put(eventClass, action);
 	}
-	public void setOnEventActions(Map<E, Action<S, E>> onEventActions) {
-		this.onEventActions = onEventActions;
+	
+	public <E> void putOnEnterAction(Class<E> eventClass, Action<S, E> action) {
+		onEnterActions.put(eventClass, action);
 	}
-	public Map<E, Action<S, E>> getOnEnterActions() {
-		return onEnterActions;
+	
+	public <E> void putOnExitAction(Class<E> eventClass, Action<S, E> action) {
+		onExitActions.put(eventClass, action);
 	}
-	public void setOnEnterActions(Map<E, Action<S, E>> onEnterActions) {
-		this.onEnterActions = onEnterActions;
+	
+	public void putTransition(Class<?> eventClass, Transition<S> transition) {
+		if(transitions.get(eventClass) == null) {
+			transitions.put(eventClass, new ArrayList<>());
+		}
+		transitions.get(eventClass).add(transition);
 	}
-	public Map<E, Action<S, E>> getOnExitActions() {
-		return onExitActions;
+	
+	private <E> Action<S, E> getAction(E event, Map<Class<?>, Action<S, ?>> actions) {
+		return (Action<S, E>) actions.get(event.getClass());
 	}
-	public void setOnExitActions(Map<E, Action<S, E>> onExitActions) {
-		this.onExitActions = onExitActions;
+	
+	public <E> Optional<Transition<S>> getTransition(E event, StateMachineCtx<S> ctx) {
+		return transitions.get(event.getClass()).stream()
+				.filter(transition -> 
+						transition.getCondition()
+						.map(condition -> condition.conditionMet(ctx))
+						.orElse(true))
+				.findFirst();
 	}
 	
 }
