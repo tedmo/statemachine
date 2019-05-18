@@ -1,4 +1,4 @@
-package com.tedmo.statemachine.test;
+package com.tedmo.statemachine.test.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

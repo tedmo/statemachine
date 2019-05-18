@@ -7,12 +7,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Transition<S> {
+public class Transition<S, D> {
 	
 	private S toState;
-	private Condition condition;
+	private Condition<D> condition;
 	
-	public Optional<Condition> getCondition() {
+	public Optional<Condition<D>> getCondition() {
 		return Optional.ofNullable(condition);
 	}
 	

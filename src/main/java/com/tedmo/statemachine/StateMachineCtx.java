@@ -8,14 +8,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StateMachineCtx <S> {
+public class StateMachineCtx <S, D> {
 	
-	private StateContext<S> currentState;
-	private Map<S, StateContext<S>> states;
-	
-	public StateMachineCtx() {
-		this.states = new HashMap<>();
-	}
+	private D appCtx;
+	private State<S, D> currentState;
+	private Map<S, State<S, D>> states = new HashMap<>();
 	
 	public <E> void sendEvent(E event) {
 		currentState.getOnEventAction(event).doAction(this, event);
@@ -23,7 +20,7 @@ public class StateMachineCtx <S> {
 			.ifPresent(transition -> doTransition(transition, event));
 	}
 	
-	private <E> void doTransition(Transition<S> transition, E event) {
+	private <E> void doTransition(Transition<S, D> transition, E event) {
 		currentState.getOnExitAction(event).doAction(this, event);
 		currentState = states.get(transition.getToState());
 		currentState.getOnEnterAction(event).doAction(this, event);
