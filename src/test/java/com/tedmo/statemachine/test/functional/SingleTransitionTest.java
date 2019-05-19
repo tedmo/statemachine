@@ -9,11 +9,9 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.tedmo.statemachine.Action;
-import com.tedmo.statemachine.Condition;
 import com.tedmo.statemachine.StateMachine;
 import com.tedmo.statemachine.StateMachineModel;
 import com.tedmo.statemachine.StateModel;
