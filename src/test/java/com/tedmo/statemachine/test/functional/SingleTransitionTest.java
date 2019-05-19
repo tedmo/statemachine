@@ -14,8 +14,9 @@ import org.mockito.MockitoAnnotations;
 
 import com.tedmo.statemachine.Action;
 import com.tedmo.statemachine.Condition;
-import com.tedmo.statemachine.State;
-import com.tedmo.statemachine.StateMachineCtx;
+import com.tedmo.statemachine.StateMachine;
+import com.tedmo.statemachine.StateMachineModel;
+import com.tedmo.statemachine.StateModel;
 import com.tedmo.statemachine.Transition;
 import com.tedmo.statemachine.test.util.TestAppCtx;
 import com.tedmo.statemachine.test.util.TestEvent;
@@ -29,10 +30,10 @@ public class SingleTransitionTest {
 	private static final String ON_ENTER = "onEnter";
 	private static final String ON_EXIT = "onExit";
 	
-	private StateMachineCtx<TestStateId, TestAppCtx> stateMachineCtx;
+	private StateMachine<TestStateId, TestAppCtx> stateMachine;
 	
-	private State<TestStateId, TestAppCtx> initStateContext;
-	private State<TestStateId, TestAppCtx> suspendedStateContext;
+	private StateModel<TestStateId, TestAppCtx> initStateModel;
+	private StateModel<TestStateId, TestAppCtx> suspendedStateModel;
 	
 	private Action<TestStateId, TestAppCtx, TestEvent> onTestEvent;
 	private Action<TestStateId, TestAppCtx, TestEvent> onEnterTestEvent;
@@ -57,7 +58,11 @@ public class SingleTransitionTest {
 		onEnterTestEvent = spy(new TestAction(ON_ENTER));
 		onExitTestEvent = spy(new TestAction(ON_EXIT));
 		
-		stateMachineCtx = buildStateMachine();
+		stateMachine = new StateMachine<>();
+		stateMachine.setAppCtx(appCtx);
+		stateMachine.setModel(buildStateMachineModel());
+		stateMachine.setCurrentState(TestStateId.START_STATE);
+		
 		
 	}
 	
@@ -67,7 +72,7 @@ public class SingleTransitionTest {
 		private String actionType;
 
 		@Override
-		public void doAction(StateMachineCtx<TestStateId, TestAppCtx> ctx, TestEvent event) {
+		public void doAction(StateMachine<TestStateId, TestAppCtx> ctx, TestEvent event) {
 			ctx.getAppCtx().logAction(ctx.getCurrentState(), event, actionType);
 			
 			System.out.println(buildActionMessage(
@@ -82,45 +87,41 @@ public class SingleTransitionTest {
 		
 	}
 	
-	private StateMachineCtx<TestStateId, TestAppCtx> buildStateMachine() {
-		StateMachineCtx<TestStateId, TestAppCtx> stateMachineCtx = new StateMachineCtx<>();
-		stateMachineCtx.setAppCtx(appCtx);
-		
-		initStateContext = new State<>(TestStateId.START_STATE);
+	private StateMachineModel<TestStateId, TestAppCtx> buildStateMachineModel() {
+		initStateModel = new StateModel<>(TestStateId.START_STATE);
 		
 		Transition<TestStateId, TestAppCtx> initToSuspendedTransition = new Transition<>();
 		initToSuspendedTransition.setToState(TestStateId.END_STATE);
-		initStateContext.putTransition(TestEvent.class, initToSuspendedTransition);
+		initStateModel.putTransition(TestEvent.class, initToSuspendedTransition);
 		
-		initStateContext.putOnEventAction(TestEvent.class, onTestEvent);
-		initStateContext.putOnExitAction(TestEvent.class, onExitTestEvent);
+		initStateModel.putOnEventAction(TestEvent.class, onTestEvent);
+		initStateModel.putOnExitAction(TestEvent.class, onExitTestEvent);
 		
-		suspendedStateContext = new State<>(TestStateId.END_STATE);
-		suspendedStateContext.putOnEnterAction(TestEvent.class, onEnterTestEvent);
+		suspendedStateModel = new StateModel<>(TestStateId.END_STATE);
+		suspendedStateModel.putOnEnterAction(TestEvent.class, onEnterTestEvent);
 		
-		Map<TestStateId, State<TestStateId, TestAppCtx>> stateContexts = new HashMap<>();
-		stateContexts.put(TestStateId.START_STATE, initStateContext);
-		stateContexts.put(TestStateId.END_STATE, suspendedStateContext);
-		stateMachineCtx.setStates(stateContexts);
+		Map<TestStateId, StateModel<TestStateId, TestAppCtx>> stateModels = new HashMap<>();
+		stateModels.put(TestStateId.START_STATE, initStateModel);
+		stateModels.put(TestStateId.END_STATE, suspendedStateModel);
 		
-		stateMachineCtx.setCurrentState(initStateContext);
+		StateMachineModel<TestStateId, TestAppCtx> stateMachineModel = new StateMachineModel<>(stateModels);
 		
-		return stateMachineCtx;
+		return stateMachineModel;
 	}
 
 	@Test
 	public void test() {
-		stateMachineCtx.sendEvent(event);
+		stateMachine.sendEvent(event);
 		
-		assertThat(stateMachineCtx.getCurrentState()).isEqualTo(TestStateId.END_STATE);
+		assertThat(stateMachine.getCurrentState()).isEqualTo(TestStateId.END_STATE);
 		
 		verify(appCtx).logAction(TestStateId.START_STATE, event, ON_EVENT);
 		verify(appCtx).logAction(TestStateId.START_STATE, event, ON_EXIT);
 		verify(appCtx).logAction(TestStateId.END_STATE, event, ON_ENTER);
 		
-		verify(onTestEvent).doAction(stateMachineCtx, event);
-		verify(onEnterTestEvent).doAction(stateMachineCtx, event);
-		verify(onExitTestEvent).doAction(stateMachineCtx, event);
+		verify(onTestEvent).doAction(stateMachine, event);
+		verify(onEnterTestEvent).doAction(stateMachine, event);
+		verify(onExitTestEvent).doAction(stateMachine, event);
 	}
 	
 }

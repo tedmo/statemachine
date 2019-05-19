@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class State<S, D> {
+public class StateModel<S, D> {
 	
 	private S id;
 	
@@ -15,7 +15,7 @@ public class State<S, D> {
 	private Map<Class<?>, Action<S, D, ?>> onEnterActions = new HashMap<>();
 	private Map<Class<?>, Action<S, D, ?>> onExitActions = new HashMap<>();
 	
-	public State(S id) {
+	public StateModel(S id) {
 		this.id = id;
 	}
 	
