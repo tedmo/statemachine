@@ -39,9 +39,6 @@ public class SingleTransitionTest {
 	private Action<TestStateId, TestAppCtx, TestEvent> onEnterTestEvent;
 	private Action<TestStateId, TestAppCtx, TestEvent> onExitTestEvent;
 	
-	@Mock
-	private Condition<TestAppCtx> condition;
-	
 	private TestAppCtx appCtx;
 	
 	private TestEvent event;
