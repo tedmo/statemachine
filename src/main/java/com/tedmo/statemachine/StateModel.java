@@ -1,23 +1,21 @@
 package com.tedmo.statemachine;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import lombok.Builder;
+
+@Builder
 public class StateModel<S, D> {
 	
 	private S id;
 	
-	private Map<Class<?>, List<Transition<S, D>>> transitions = new HashMap<>();
-	private Map<Class<?>, Action<S, D, ?>> onEventActions = new HashMap<>();
-	private Map<Class<?>, Action<S, D, ?>> onEnterActions = new HashMap<>();
-	private Map<Class<?>, Action<S, D, ?>> onExitActions = new HashMap<>();
-	
-	public StateModel(S id) {
-		this.id = id;
-	}
+	private Map<Class<?>, List<Transition<S, D>>> transitions;
+	private Map<Class<?>, Action<S, D, ?>> onEventActions;
+	private Map<Class<?>, Action<S, D, ?>> onEnterActions;
+	private Map<Class<?>, Action<S, D, ?>> onExitActions;
 	
 	public S getId() {
 		return id;
@@ -35,29 +33,6 @@ public class StateModel<S, D> {
 		return getAction(event, onEnterActions);
 	}
 	
-	public <E> void putOnEventAction(Class<E> eventClass, Action<S, D, E> action) {
-		onEventActions.put(eventClass, action);
-	}
-	
-	public <E> void putOnEnterAction(Class<E> eventClass, Action<S, D, E> action) {
-		onEnterActions.put(eventClass, action);
-	}
-	
-	public <E> void putOnExitAction(Class<E> eventClass, Action<S, D, E> action) {
-		onExitActions.put(eventClass, action);
-	}
-	
-	public void putTransition(Class<?> eventClass, Transition<S, D> transition) {
-		if(transitions.get(eventClass) == null) {
-			transitions.put(eventClass, new ArrayList<>());
-		}
-		transitions.get(eventClass).add(transition);
-	}
-	
-	private <E> Action<S, D, E> getAction(E event, Map<Class<?>, Action<S, D, ?>> actions) {
-		return (Action<S, D, E>) actions.get(event.getClass());
-	}
-	
 	public <E> Optional<Transition<S, D>> getTransition(E event, StateMachine<S, D> ctx) {
 		return transitions.get(event.getClass()).stream()
 				.filter(transition -> 
@@ -65,6 +40,10 @@ public class StateModel<S, D> {
 						.map(condition -> condition.conditionMet(ctx))
 						.orElse(true))
 				.findFirst();
+	}
+	
+	private <E> Action<S, D, E> getAction(E event, Map<Class<?>, Action<S, D, ?>> actions) {
+		return (Action<S, D, E>) actions.get(event.getClass());
 	}
 	
 }

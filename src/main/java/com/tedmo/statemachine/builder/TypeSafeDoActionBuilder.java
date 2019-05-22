@@ -1,4 +1,6 @@
-package com.tedmo.statemachine;
+package com.tedmo.statemachine.builder;
+
+import com.tedmo.statemachine.Action;
 
 public class TypeSafeDoActionBuilder <S, D, E>{
 	
@@ -8,7 +10,7 @@ public class TypeSafeDoActionBuilder <S, D, E>{
 		this.transitionalActionBuilder = transitionActionBuilder;
 	}
 	
-	public ActionMapBuilder<S, D> doAction(Action<S, D, E> action) {
+	public StateMachineModelBuilder<S, D> doAction(Action<S, D, E> action) {
 		return this.transitionalActionBuilder.doAction(action);
 	}
 	

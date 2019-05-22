@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,8 +14,7 @@ import org.mockito.MockitoAnnotations;
 import com.tedmo.statemachine.Action;
 import com.tedmo.statemachine.StateMachine;
 import com.tedmo.statemachine.StateMachineModel;
-import com.tedmo.statemachine.StateModel;
-import com.tedmo.statemachine.Transition;
+import com.tedmo.statemachine.builder.StateMachineModelBuilder;
 import com.tedmo.statemachine.test.util.TestAppCtx;
 import com.tedmo.statemachine.test.util.TestEvent;
 import com.tedmo.statemachine.test.util.TestStateId;
@@ -29,9 +28,6 @@ public class SingleTransitionTest {
 	private static final String ON_EXIT = "onExit";
 	
 	private StateMachine<TestStateId, TestAppCtx> stateMachine;
-	
-	private StateModel<TestStateId, TestAppCtx> initStateModel;
-	private StateModel<TestStateId, TestAppCtx> suspendedStateModel;
 	
 	private Action<TestStateId, TestAppCtx, TestEvent> onTestEvent;
 	private Action<TestStateId, TestAppCtx, TestEvent> onEnterTestEvent;
@@ -83,25 +79,27 @@ public class SingleTransitionTest {
 	}
 	
 	private StateMachineModel<TestStateId, TestAppCtx> buildStateMachineModel() {
-		initStateModel = new StateModel<>(TestStateId.START_STATE);
-		
-		Transition<TestStateId, TestAppCtx> initToSuspendedTransition = new Transition<>();
-		initToSuspendedTransition.setToState(TestStateId.END_STATE);
-		initStateModel.putTransition(TestEvent.class, initToSuspendedTransition);
-		
-		initStateModel.putOnEventAction(TestEvent.class, onTestEvent);
-		initStateModel.putOnExitAction(TestEvent.class, onExitTestEvent);
-		
-		suspendedStateModel = new StateModel<>(TestStateId.END_STATE);
-		suspendedStateModel.putOnEnterAction(TestEvent.class, onEnterTestEvent);
-		
-		Map<TestStateId, StateModel<TestStateId, TestAppCtx>> stateModels = new HashMap<>();
-		stateModels.put(TestStateId.START_STATE, initStateModel);
-		stateModels.put(TestStateId.END_STATE, suspendedStateModel);
-		
-		StateMachineModel<TestStateId, TestAppCtx> stateMachineModel = new StateMachineModel<>(stateModels);
-		
-		return stateMachineModel;
+		return new StateMachineModelBuilder<TestStateId, TestAppCtx>()
+			.states(new HashSet<>(Arrays.asList(TestStateId.START_STATE, TestStateId.END_STATE)))
+			.initialState(TestStateId.START_STATE)
+			.transition()
+				.from(TestStateId.START_STATE)
+				.to(TestStateId.END_STATE)
+				.on(TestEvent.class)
+				.withoutCondition()
+			.action()
+				.in(TestStateId.START_STATE)
+				.on(TestEvent.class)
+				.doAction(onTestEvent)
+			.action()
+				.exiting(TestStateId.START_STATE)
+				.on(TestEvent.class)
+				.doAction(onExitTestEvent)
+			.action()
+				.entering(TestStateId.END_STATE)
+				.on(TestEvent.class)
+				.doAction(onEnterTestEvent)
+			.build();
 	}
 
 	@Test
