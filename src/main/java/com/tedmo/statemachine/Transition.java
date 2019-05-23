@@ -2,21 +2,18 @@ package com.tedmo.statemachine;
 
 import java.util.Optional;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Getter(value=AccessLevel.PACKAGE)
 @AllArgsConstructor
-@NoArgsConstructor
-public class Transition<S, D> {
+public final class Transition<S, C> {
 	
-	private S toState;
-	private Condition<D> condition;
+	private final S toState;
+	private final Condition<C> condition;
 	
-	public Optional<Condition<D>> getCondition() {
+	public Optional<Condition<C>> getCondition() {
 		return Optional.ofNullable(condition);
 	}
 	

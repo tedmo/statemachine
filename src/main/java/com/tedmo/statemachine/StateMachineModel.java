@@ -4,33 +4,37 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class StateMachineModel<S, D> {
+public final class StateMachineModel<S, C> {
 	
-	private Map<S, StateModel<S, D>> states = new HashMap<>();
+	private Map<S, StateModel<S, C>> states = new HashMap<>();
 	private S initialState;
 	
-	public StateMachineModel(Map<S, StateModel<S, D>> states, S initialState) {
+	public StateMachineModel(Map<S, StateModel<S, C>> states, S initialState) {
 		this.states = states;
 		this.initialState = initialState;
 	}
 	
-	public StateModel<S, D> getState(S state) {
+	public S getInitialState() {
+		return initialState;
+	}
+	
+	public StateModel<S, C> getState(S state) {
 		return states.get(state);
 	}
 	
-	public <E> Action<S, D, E> getOnEventAction(S state, E event) {
+	public <E> Action<S, C, E> getOnEventAction(S state, E event) {
 		return states.get(state).getOnEventAction(event);
 	}
 	
-	public <E> Action<S, D, E> getOnExitAction(S state, E event) {
+	public <E> Action<S, C, E> getOnExitAction(S state, E event) {
 		return states.get(state).getOnExitAction(event);
 	}
 	
-	public <E> Action<S, D, E> getOnEnterAction(S state, E event) {
+	public <E> Action<S, C, E> getOnEnterAction(S state, E event) {
 		return states.get(state).getOnEnterAction(event);
 	}
 	
-	public <E> Optional<Transition<S, D>> getTransition(S state, E event, StateMachine<S, D> ctx) {
+	public <E> Optional<Transition<S, C>> getTransition(S state, E event, StateMachine<S, C> ctx) {
 		return states.get(state).getTransition(event, ctx);
 	}
 	

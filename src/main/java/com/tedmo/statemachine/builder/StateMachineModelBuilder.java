@@ -1,7 +1,9 @@
 package com.tedmo.statemachine.builder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,6 +48,11 @@ public class StateMachineModelBuilder<S, D> {
 	
 	public StateMachineModelBuilder<S, D> states(Set<S> states) {
 		this.states = states;
+		return this;
+	}
+	
+	public StateMachineModelBuilder<S, D> states(S... states) {
+		this.states = new HashSet<S>(Arrays.asList(states));
 		return this;
 	}
 	

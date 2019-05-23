@@ -1,11 +1,10 @@
 package com.tedmo.statemachine.test.functional;
 
+import static com.tedmo.statemachine.test.util.TestStateId.END_STATE;
+import static com.tedmo.statemachine.test.util.TestStateId.START_STATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-
-import java.util.Arrays;
-import java.util.HashSet;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,12 +48,47 @@ public class SingleTransitionTest {
 		onEnterTestEvent = spy(new TestAction(ON_ENTER));
 		onExitTestEvent = spy(new TestAction(ON_EXIT));
 		
-		stateMachine = new StateMachine<>();
-		stateMachine.setAppCtx(appCtx);
-		stateMachine.setModel(buildStateMachineModel());
-		stateMachine.setCurrentState(TestStateId.START_STATE);
+		stateMachine = new StateMachine<>(appCtx, buildStateMachineModel());
 		
+	}
+
+	@Test
+	public void test() {
+		stateMachine.sendEvent(event);
 		
+		assertThat(stateMachine.getCurrentState()).isEqualTo(END_STATE);
+		
+		verify(appCtx).logAction(START_STATE, event, ON_EVENT);
+		verify(appCtx).logAction(START_STATE, event, ON_EXIT);
+		verify(appCtx).logAction(END_STATE, event, ON_ENTER);
+		
+		verify(onTestEvent).doAction(stateMachine, event);
+		verify(onEnterTestEvent).doAction(stateMachine, event);
+		verify(onExitTestEvent).doAction(stateMachine, event);
+	}
+	
+	private StateMachineModel<TestStateId, TestAppCtx> buildStateMachineModel() {
+		return new StateMachineModelBuilder<TestStateId, TestAppCtx>()
+			.states(START_STATE, END_STATE)
+			.initialState(START_STATE)
+			.transition()
+				.from(START_STATE)
+				.to(END_STATE)
+				.on(TestEvent.class)
+				.withoutCondition()
+			.action()
+				.in(START_STATE)
+				.on(TestEvent.class)
+				.doAction(onTestEvent)
+			.action()
+				.exiting(START_STATE)
+				.on(TestEvent.class)
+				.doAction(onExitTestEvent)
+			.action()
+				.entering(END_STATE)
+				.on(TestEvent.class)
+				.doAction(onEnterTestEvent)
+			.build();
 	}
 	
 	@AllArgsConstructor
@@ -76,45 +110,6 @@ public class SingleTransitionTest {
 			return String.format("%s %s: %s", actionType, state, message);
 		}
 		
-	}
-	
-	private StateMachineModel<TestStateId, TestAppCtx> buildStateMachineModel() {
-		return new StateMachineModelBuilder<TestStateId, TestAppCtx>()
-			.states(new HashSet<>(Arrays.asList(TestStateId.START_STATE, TestStateId.END_STATE)))
-			.initialState(TestStateId.START_STATE)
-			.transition()
-				.from(TestStateId.START_STATE)
-				.to(TestStateId.END_STATE)
-				.on(TestEvent.class)
-				.withoutCondition()
-			.action()
-				.in(TestStateId.START_STATE)
-				.on(TestEvent.class)
-				.doAction(onTestEvent)
-			.action()
-				.exiting(TestStateId.START_STATE)
-				.on(TestEvent.class)
-				.doAction(onExitTestEvent)
-			.action()
-				.entering(TestStateId.END_STATE)
-				.on(TestEvent.class)
-				.doAction(onEnterTestEvent)
-			.build();
-	}
-
-	@Test
-	public void test() {
-		stateMachine.sendEvent(event);
-		
-		assertThat(stateMachine.getCurrentState()).isEqualTo(TestStateId.END_STATE);
-		
-		verify(appCtx).logAction(TestStateId.START_STATE, event, ON_EVENT);
-		verify(appCtx).logAction(TestStateId.START_STATE, event, ON_EXIT);
-		verify(appCtx).logAction(TestStateId.END_STATE, event, ON_ENTER);
-		
-		verify(onTestEvent).doAction(stateMachine, event);
-		verify(onEnterTestEvent).doAction(stateMachine, event);
-		verify(onExitTestEvent).doAction(stateMachine, event);
 	}
 	
 }

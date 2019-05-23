@@ -1,6 +1,5 @@
 package com.tedmo.statemachine;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -8,32 +7,32 @@ import java.util.Optional;
 import lombok.Builder;
 
 @Builder
-public class StateModel<S, D> {
+public final class StateModel<S, C> {
 	
 	private S id;
 	
-	private Map<Class<?>, List<Transition<S, D>>> transitions;
-	private Map<Class<?>, Action<S, D, ?>> onEventActions;
-	private Map<Class<?>, Action<S, D, ?>> onEnterActions;
-	private Map<Class<?>, Action<S, D, ?>> onExitActions;
+	private Map<Class<?>, List<Transition<S, C>>> transitions;
+	private Map<Class<?>, Action<S, C, ?>> onEventActions;
+	private Map<Class<?>, Action<S, C, ?>> onEnterActions;
+	private Map<Class<?>, Action<S, C, ?>> onExitActions;
 	
 	public S getId() {
 		return id;
 	}
 	
-	public <E> Action<S, D, E> getOnEventAction(E event) {
+	public <E> Action<S, C, E> getOnEventAction(E event) {
 		return getAction(event, onEventActions);
 	}
 	
-	public <E> Action<S, D, E> getOnExitAction(E event) {
+	public <E> Action<S, C, E> getOnExitAction(E event) {
 		return getAction(event, onExitActions);
 	}
 	
-	public <E> Action<S, D, E> getOnEnterAction(E event) {
+	public <E> Action<S, C, E> getOnEnterAction(E event) {
 		return getAction(event, onEnterActions);
 	}
 	
-	public <E> Optional<Transition<S, D>> getTransition(E event, StateMachine<S, D> ctx) {
+	public <E> Optional<Transition<S, C>> getTransition(E event, StateMachine<S, C> ctx) {
 		return transitions.get(event.getClass()).stream()
 				.filter(transition -> 
 						transition.getCondition()
@@ -42,8 +41,9 @@ public class StateModel<S, D> {
 				.findFirst();
 	}
 	
-	private <E> Action<S, D, E> getAction(E event, Map<Class<?>, Action<S, D, ?>> actions) {
-		return (Action<S, D, E>) actions.get(event.getClass());
+	@SuppressWarnings("unchecked")
+	private <E> Action<S, C, E> getAction(E event, Map<Class<?>, Action<S, C, ?>> actions) {
+		return (Action<S, C, E>) actions.get(event.getClass());
 	}
 	
 }

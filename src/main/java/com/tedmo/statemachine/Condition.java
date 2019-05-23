@@ -1,6 +1,5 @@
 package com.tedmo.statemachine;
 
-public interface Condition<D> {
-
-	public boolean conditionMet(StateMachine<?, D> ctx);
+public interface Condition<C> {
+	boolean conditionMet(StateMachine<?, C> ctx);
 }
