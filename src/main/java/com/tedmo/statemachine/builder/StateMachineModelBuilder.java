@@ -37,7 +37,6 @@ public class StateMachineModelBuilder<S, D> {
 
 	private StateModel<S, D> buildStateModel(S state) {
 		StateModel<S, D> stateModel = StateModel.<S, D>builder()
-			.id(state)
 			.transitions(transitions.get(state))
 			.onEventActions(onEventActions.get(state))
 			.onEnterActions(onEnterActions.get(state))

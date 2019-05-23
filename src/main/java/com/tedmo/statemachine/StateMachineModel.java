@@ -18,10 +18,6 @@ public final class StateMachineModel<S, C> {
 		return initialState;
 	}
 	
-	public StateModel<S, C> getState(S state) {
-		return states.get(state);
-	}
-	
 	public <E> Action<S, C, E> getOnEventAction(S state, E event) {
 		return states.get(state).getOnEventAction(event);
 	}
@@ -34,8 +30,8 @@ public final class StateMachineModel<S, C> {
 		return states.get(state).getOnEnterAction(event);
 	}
 	
-	public <E> Optional<Transition<S, C>> getTransition(S state, E event, StateMachine<S, C> ctx) {
-		return states.get(state).getTransition(event, ctx);
+	public <E> Optional<Transition<S, C>> getTransition(S state, E event, C appCtx) {
+		return states.get(state).getTransition(event, appCtx);
 	}
 	
 }

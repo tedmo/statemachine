@@ -9,16 +9,10 @@ import lombok.Builder;
 @Builder
 public final class StateModel<S, C> {
 	
-	private S id;
-	
 	private Map<Class<?>, List<Transition<S, C>>> transitions;
 	private Map<Class<?>, Action<S, C, ?>> onEventActions;
 	private Map<Class<?>, Action<S, C, ?>> onEnterActions;
 	private Map<Class<?>, Action<S, C, ?>> onExitActions;
-	
-	public S getId() {
-		return id;
-	}
 	
 	public <E> Action<S, C, E> getOnEventAction(E event) {
 		return getAction(event, onEventActions);
@@ -32,7 +26,7 @@ public final class StateModel<S, C> {
 		return getAction(event, onEnterActions);
 	}
 	
-	public <E> Optional<Transition<S, C>> getTransition(E event, StateMachine<S, C> ctx) {
+	public <E> Optional<Transition<S, C>> getTransition(E event, C ctx) {
 		return transitions.get(event.getClass()).stream()
 				.filter(transition -> 
 						transition.getCondition()
