@@ -1,6 +1,9 @@
 package com.tedmo.statemachine;
 
-public class StateMachine <S, C> {
+import com.tedmo.statemachine.model.StateMachineModel;
+import com.tedmo.statemachine.model.TransitionModel;
+
+public final class StateMachine <S, C> {
 	
 	final private C appCtx;
 	final private StateMachineModel<S, C> model;
@@ -21,15 +24,18 @@ public class StateMachine <S, C> {
 	}
 	
 	public <E> void sendEvent(E event) {
-		model.getOnEventAction(currentState, event).doAction(currentState, appCtx, event);
+		model.getOnEventAction(currentState, event)
+			.ifPresent(action -> action.doAction(currentState, appCtx, event));
 		model.getTransition(currentState, event, appCtx)
 			.ifPresent(transition -> doTransition(transition, event));
 	}
 	
-	private <E> void doTransition(Transition<S, C> transition, E event) {
-		model.getOnExitAction(currentState, event).doAction(currentState, appCtx, event);
+	private <E> void doTransition(TransitionModel<S, C> transition, E event) {
+		model.getOnExitAction(currentState, event)
+			.ifPresent(action -> action.doAction(currentState, appCtx, event));
 		currentState = transition.getToState();
-		model.getOnEnterAction(currentState, event).doAction(currentState, appCtx, event);
+		model.getOnEnterAction(currentState, event)
+			.ifPresent(action -> action.doAction(currentState, appCtx, event));
 	}
 	
 }

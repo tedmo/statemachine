@@ -1,10 +1,10 @@
-package com.tedmo.statemachine.builder;
+package com.tedmo.statemachine.model.builder;
 
 import java.util.List;
 import java.util.Map;
 
-import com.tedmo.statemachine.Condition;
-import com.tedmo.statemachine.Transition;
+import com.tedmo.statemachine.model.Condition;
+import com.tedmo.statemachine.model.TransitionModel;
 
 import lombok.Getter;
 
@@ -18,7 +18,7 @@ public class TransitionBuilder<S, D> {
 	private Class<?> on;
 	private Condition<D> when;
 	
-	private Map<S, List<Transition<S, D>>> transitions;
+	private Map<S, List<TransitionModel<S, D>>> transitions;
 	
 	public TransitionBuilder(StateMachineModelBuilder<S, D> stateMachineModelBuilder) {
 		this.stateMachineModelBuilder = stateMachineModelBuilder;

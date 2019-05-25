@@ -1,6 +1,6 @@
 package com.tedmo.statemachine.test.util;
 
-import com.tedmo.statemachine.Action;
+import com.tedmo.statemachine.model.Action;
 
 import lombok.AllArgsConstructor;
 

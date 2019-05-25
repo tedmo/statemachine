@@ -1,4 +1,4 @@
-package com.tedmo.statemachine.builder;
+package com.tedmo.statemachine.model.builder;
 
 public class ActionBuilder <S, D> {
 

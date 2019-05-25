@@ -1,4 +1,4 @@
-package com.tedmo.statemachine;
+package com.tedmo.statemachine.model;
 
 public interface Condition<C> {
 	boolean conditionMet(C appCtx);

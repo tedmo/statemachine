@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class TestAppCtx {
 	
-	List<TestActionLog> actionLog = new ArrayList<>();
+	private List<TestActionLog> actionLog = new ArrayList<>();
 	
 	public void logAction(TestStateId state, Object event, String actionType) {
 		// do nothing
