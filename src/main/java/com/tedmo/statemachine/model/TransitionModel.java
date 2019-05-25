@@ -1,14 +1,13 @@
-package com.tedmo.statemachine;
+package com.tedmo.statemachine.model;
 
 import java.util.Optional;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter(value=AccessLevel.PACKAGE)
+@Getter
 @AllArgsConstructor
-public final class Transition<S, C> {
+public final class TransitionModel<S, C> {
 	
 	private final S toState;
 	private final Condition<C> condition;

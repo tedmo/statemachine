@@ -1,4 +1,4 @@
-package com.tedmo.statemachine.builder;
+package com.tedmo.statemachine.model.builder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,16 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.tedmo.statemachine.Action;
-import com.tedmo.statemachine.StateMachineModel;
-import com.tedmo.statemachine.StateModel;
-import com.tedmo.statemachine.Transition;
+import com.tedmo.statemachine.model.Action;
+import com.tedmo.statemachine.model.StateMachineModel;
+import com.tedmo.statemachine.model.StateModel;
+import com.tedmo.statemachine.model.TransitionModel;
 
 public class StateMachineModelBuilder<S, D> {
 	
 	private Set<S> states;
 	private S initialState;
-	private Map<S, Map<Class<?>, List<Transition<S, D>>>> transitions = new HashMap<>();
+	private Map<S, Map<Class<?>, List<TransitionModel<S, D>>>> transitions = new HashMap<>();
 	
 	private Map<S, Map<Class<?>, Action<S, D, ?>>> onEventActions = new HashMap<>();
 	private Map<S, Map<Class<?>, Action<S, D, ?>>> onEnterActions = new HashMap<>();
@@ -36,6 +36,7 @@ public class StateMachineModelBuilder<S, D> {
 	}
 
 	private StateModel<S, D> buildStateModel(S state) {
+		
 		StateModel<S, D> stateModel = StateModel.<S, D>builder()
 			.transitions(transitions.get(state))
 			.onEventActions(onEventActions.get(state))
@@ -73,7 +74,7 @@ public class StateMachineModelBuilder<S, D> {
 			transitions.put(from, new HashMap<>());
 		}
 		
-		Map<Class<?>, List<Transition<S, D>>> stateTransitions = transitions.get(from);
+		Map<Class<?>, List<TransitionModel<S, D>>> stateTransitions = transitions.get(from);
 		
 		Class<?> on = transitionBuilder.getOn();
 		if(stateTransitions.get(on) == null) {
@@ -81,7 +82,7 @@ public class StateMachineModelBuilder<S, D> {
 		}
 		
 		stateTransitions.get(on).add(
-				new Transition<>(transitionBuilder.getTo(), transitionBuilder.getWhen()));
+				new TransitionModel<>(transitionBuilder.getTo(), transitionBuilder.getWhen()));
 		
 		return this;
 	}

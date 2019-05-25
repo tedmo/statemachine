@@ -5,9 +5,9 @@ import static org.mockito.Mockito.spy;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockitoAnnotations;
 
-import com.tedmo.statemachine.Action;
 import com.tedmo.statemachine.StateMachine;
-import com.tedmo.statemachine.StateMachineModel;
+import com.tedmo.statemachine.model.Action;
+import com.tedmo.statemachine.model.StateMachineModel;
 import com.tedmo.statemachine.test.util.TestAction;
 import com.tedmo.statemachine.test.util.TestAppCtx;
 import com.tedmo.statemachine.test.util.TestEvent;

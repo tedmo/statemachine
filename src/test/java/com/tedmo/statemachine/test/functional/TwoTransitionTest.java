@@ -7,8 +7,8 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.Test;
 
-import com.tedmo.statemachine.StateMachineModel;
-import com.tedmo.statemachine.builder.StateMachineModelBuilder;
+import com.tedmo.statemachine.model.StateMachineModel;
+import com.tedmo.statemachine.model.builder.StateMachineModelBuilder;
 import com.tedmo.statemachine.test.util.TestAppCtx;
 import com.tedmo.statemachine.test.util.TestEvent;
 import com.tedmo.statemachine.test.util.TestStateId;

@@ -1,4 +1,4 @@
-package com.tedmo.statemachine;
+package com.tedmo.statemachine.model;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,19 +18,19 @@ public final class StateMachineModel<S, C> {
 		return initialState;
 	}
 	
-	public <E> Action<S, C, E> getOnEventAction(S state, E event) {
+	public <E> Optional<Action<S, C, E>> getOnEventAction(S state, E event) {
 		return states.get(state).getOnEventAction(event);
 	}
 	
-	public <E> Action<S, C, E> getOnExitAction(S state, E event) {
+	public <E> Optional<Action<S, C, E>> getOnExitAction(S state, E event) {
 		return states.get(state).getOnExitAction(event);
 	}
 	
-	public <E> Action<S, C, E> getOnEnterAction(S state, E event) {
+	public <E> Optional<Action<S, C, E>> getOnEnterAction(S state, E event) {
 		return states.get(state).getOnEnterAction(event);
 	}
 	
-	public <E> Optional<Transition<S, C>> getTransition(S state, E event, C appCtx) {
+	public <E> Optional<TransitionModel<S, C>> getTransition(S state, E event, C appCtx) {
 		return states.get(state).getTransition(event, appCtx);
 	}
 	

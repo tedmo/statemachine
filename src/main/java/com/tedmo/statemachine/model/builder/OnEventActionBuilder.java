@@ -1,4 +1,4 @@
-package com.tedmo.statemachine.builder;
+package com.tedmo.statemachine.model.builder;
 
 public class OnEventActionBuilder<S, D> extends TransitionalActionBuilder<S, D>{
 	

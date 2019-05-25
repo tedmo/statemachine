@@ -1,6 +1,6 @@
-package com.tedmo.statemachine.builder;
+package com.tedmo.statemachine.model.builder;
 
-import com.tedmo.statemachine.Action;
+import com.tedmo.statemachine.model.Action;
 
 public class TypeSafeDoActionBuilder <S, D, E>{
 	
