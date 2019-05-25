@@ -1,6 +1,6 @@
 package com.tedmo.statemachine.model.builder;
 
-public class OnEventActionBuilder<S, D> extends TransitionalActionBuilder<S, D>{
+public class OnEventActionBuilder<S extends Enum<S>, D> extends TransitionalActionBuilder<S, D>{
 	
 	public OnEventActionBuilder(ActionBuilder<S, D> actionBuilder, S enteredState) {
 		super(actionBuilder, enteredState);
