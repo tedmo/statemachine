@@ -2,6 +2,7 @@ package com.tedmo.statemachine.model.builder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +14,7 @@ import com.tedmo.statemachine.model.StateMachineModel;
 import com.tedmo.statemachine.model.StateModel;
 import com.tedmo.statemachine.model.TransitionModel;
 
-public class StateMachineModelBuilder<S, D> {
+public class StateMachineModelBuilder<S extends Enum<S>, D> {
 	
 	private Set<S> states;
 	private S initialState;
@@ -46,13 +47,8 @@ public class StateMachineModelBuilder<S, D> {
 		return stateModel;
 	}
 	
-	public StateMachineModelBuilder<S, D> states(Set<S> states) {
-		this.states = states;
-		return this;
-	}
-	
-	public StateMachineModelBuilder<S, D> states(S... states) {
-		this.states = new HashSet<S>(Arrays.asList(states));
+	public StateMachineModelBuilder<S, D> states(Class<S> stateEnum) {
+		this.states = EnumSet.allOf(stateEnum);
 		return this;
 	}
 	

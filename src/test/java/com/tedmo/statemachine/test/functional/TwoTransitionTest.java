@@ -18,7 +18,7 @@ public class TwoTransitionTest extends TwoStateTestBase {
 	@Override
 	protected StateMachineModel<TestStateId, TestAppCtx> buildStateMachineModel() {
 		return new StateMachineModelBuilder<TestStateId, TestAppCtx>()
-			.states(START_STATE, END_STATE)
+			.states(TestStateId.class)
 			.initialState(START_STATE)
 			.transition()
 				.from(START_STATE)

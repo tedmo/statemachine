@@ -1,6 +1,6 @@
 package com.tedmo.statemachine.model.builder;
 
-public class ActionBuilder <S, D> {
+public class ActionBuilder <S extends Enum<S>, D> {
 
 	private StateMachineModelBuilder<S, D> stateMachineModelBuilder;
 	

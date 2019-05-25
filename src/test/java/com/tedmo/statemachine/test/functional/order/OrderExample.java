@@ -84,7 +84,7 @@ public class OrderExample {
 	
 	private StateMachineModel<OrderState, Order> buildStateMachineModel() {
 		return new StateMachineModelBuilder<OrderState, Order>()
-			.states(INIT, PROCESSING, SHIPPED, DELIVERED)
+			.states(OrderState.class)
 			.initialState(INIT)
 			.transition()
 				.from(INIT)

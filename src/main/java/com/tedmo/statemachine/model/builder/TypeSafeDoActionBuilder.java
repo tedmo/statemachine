@@ -2,7 +2,7 @@ package com.tedmo.statemachine.model.builder;
 
 import com.tedmo.statemachine.model.Action;
 
-public class TypeSafeDoActionBuilder <S, D, E>{
+public class TypeSafeDoActionBuilder <S extends Enum<S>, D, E>{
 	
 	private TransitionalActionBuilder<S, D> transitionalActionBuilder;
 	

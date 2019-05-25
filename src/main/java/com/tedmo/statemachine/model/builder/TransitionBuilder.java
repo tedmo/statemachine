@@ -9,7 +9,7 @@ import com.tedmo.statemachine.model.TransitionModel;
 import lombok.Getter;
 
 @Getter
-public class TransitionBuilder<S, D> {
+public class TransitionBuilder<S extends Enum<S>, D> {
 	
 	private StateMachineModelBuilder<S, D> stateMachineModelBuilder;
 	
