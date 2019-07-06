@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import com.tedmo.statemachine.model.Action;
@@ -30,6 +31,10 @@ public class StateMachineModelBuilder<S extends Enum<S>, D> {
 	
 	public StateMachineModel<S, D> build() {
 		
+		if(Objects.isNull(states)) {
+			
+		}
+		
 		Map<S, StateModel<S, D>> stateModels = new HashMap<>();
 		
 		for(S state : states) {
@@ -52,11 +57,23 @@ public class StateMachineModelBuilder<S extends Enum<S>, D> {
 	}
 	
 	public StateMachineModelBuilder<S, D> states(Class<S> stateEnum) {
-		this.states = EnumSet.allOf(stateEnum);
+		if(Objects.isNull(stateEnum)) {
+			throw new IllegalArgumentException("An enum type must be provided to declare valid states in the state machine");
+		}
+		
+		EnumSet<S> enumSet = EnumSet.allOf(stateEnum);
+		if(enumSet.isEmpty()) {
+			throw new IllegalArgumentException("At least one element must be declared in the provided enum type");
+		}
+		
+		this.states = enumSet;
 		return this;
 	}
 	
 	public StateMachineModelBuilder<S, D> initialState(S initialState) {
+		if(Objects.isNull(initialState)) {
+			throw new IllegalArgumentException("The initial state must be provided");
+		}
 		this.initialState = initialState;
 		return this;
 	}
@@ -70,14 +87,14 @@ public class StateMachineModelBuilder<S extends Enum<S>, D> {
 		// TODO validate transition builder
 		
 		S from = transitionBuilder.getFrom();
-		if(transitions.get(from) == null) {
+		if(Objects.isNull(transitions.get(from))) {
 			transitions.put(from, new HashMap<>());
 		}
 		
 		Map<Class<?>, List<TransitionModel<S, D>>> stateTransitions = transitions.get(from);
 		
 		Class<?> on = transitionBuilder.getOn();
-		if(stateTransitions.get(on) == null) {
+		if(Objects.isNull(stateTransitions.get(on))) {
 			stateTransitions.put(on, new ArrayList<>());
 		}
 		
@@ -109,7 +126,7 @@ public class StateMachineModelBuilder<S extends Enum<S>, D> {
 	private void addAction(Map<S, Map<Class<?>, Action<S, D, ?>>> actions,
 			TransitionalActionBuilder<S, D> actionBuilder) {
 		S state = actionBuilder.getState();
-		if(actions.get(state) == null) {
+		if(Objects.isNull(actions.get(state))) {
 			actions.put(state, new HashMap<>());
 		}
 		
