@@ -3,7 +3,7 @@ package com.tedmo.statemachine;
 import com.tedmo.statemachine.model.StateMachineModel;
 import com.tedmo.statemachine.model.TransitionModel;
 
-public final class StateMachine <S, C> {
+public final class StateMachine <S extends Enum<S>, C> {
 	
 	final private C appCtx;
 	final private StateMachineModel<S, C> model;

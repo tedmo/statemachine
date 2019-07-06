@@ -12,6 +12,12 @@ import com.tedmo.statemachine.model.StateMachineModel;
 import com.tedmo.statemachine.model.StateModel;
 import com.tedmo.statemachine.model.TransitionModel;
 
+/**
+ * Helper for building a state machine model
+ *
+ * @param <S> Enum holding all valid states
+ * @param <D> Domain object that the state machine maintains state for 
+ */
 public class StateMachineModelBuilder<S extends Enum<S>, D> {
 	
 	private Set<S> states;

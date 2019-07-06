@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public final class StateMachineModel<S, C> {
+public final class StateMachineModel<S extends Enum<S>, C> {
 	
 	private Map<S, StateModel<S, C>> states = new HashMap<>();
 	private S initialState;
