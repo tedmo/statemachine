@@ -1,7 +1,14 @@
 # statemachine
 
-This library is a sort of hybrid implementation of the state pattern and a state machine.  The intention is to provide a simple way of reacting to events based on the current state of a domain object. 
+This library is a sort of hybrid implementation of the state pattern and a state machine.  The intention is to provide a simple way of reacting to events based on the current state of a domain object.
 
+#### Goals
+- Manage the state of a domain object/context through events
+- Perform actions triggered by events based on current state 
+- Handle events with different payloads while maintaining type safety
+- Simple/readable state model construction
+
+#### Getting Started
 1. Create a state machine model:
 ```java
 new StateMachineModelBuilder<StateEnum, DomainObject>()
