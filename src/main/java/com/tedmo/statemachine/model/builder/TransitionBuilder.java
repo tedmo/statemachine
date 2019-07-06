@@ -2,8 +2,8 @@ package com.tedmo.statemachine.model.builder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
-import com.tedmo.statemachine.model.Condition;
 import com.tedmo.statemachine.model.TransitionModel;
 
 import lombok.Getter;
@@ -16,7 +16,7 @@ public class TransitionBuilder<S extends Enum<S>, D> {
 	private S from;
 	private S to;
 	private Class<?> on;
-	private Condition<D> when;
+	private Predicate<D> when;
 	
 	private Map<S, List<TransitionModel<S, D>>> transitions;
 	
@@ -39,7 +39,7 @@ public class TransitionBuilder<S extends Enum<S>, D> {
 		return this;
 	}
 	
-	public StateMachineModelBuilder<S, D> when(Condition<D> condition) {
+	public StateMachineModelBuilder<S, D> when(Predicate<D> condition) {
 		this.when = condition;
 		return this.stateMachineModelBuilder.addTransition(this);
 	}

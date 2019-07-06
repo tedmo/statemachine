@@ -37,7 +37,7 @@ public final class StateModel<S, C> {
 		return transitions.get(event.getClass()).stream()
 				.filter(transition -> 
 						transition.getCondition()
-						.map(condition -> condition.conditionMet(ctx))
+						.map(condition -> condition.test(ctx))
 						.orElse(true))
 				.findFirst();
 	}
